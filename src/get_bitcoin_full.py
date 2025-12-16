@@ -70,6 +70,8 @@ def tratar_dados_bitcoin(dados_json, taxa_usd_brl):
 # Extraindo dados
 Dados_bitcoin = extrair_dados_bitcoin()
 dados_cotacao = extrair_cotacao_usd_brl()
+
+# Extraindo a taxa de conversão USD-BRL
 taxa_usd_brl = float(dados_cotacao['USDBRL']['bid'])
 
 # Tratando os dados e convertendo para BRL
