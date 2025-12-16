@@ -82,22 +82,7 @@ df = spark.createDataFrame(dados_bitcoin_tratado)
 # Caminho da tabela Delta no Unity Catalog
 delta_table_path = "pipeline_api_bitcoin.bitcoin_data.bitcoin_data"
 
-# Criar a tabela Delta explicitamente (se não existir)
-spark.sql(f"""
-    CREATE TABLE IF NOT EXISTS {delta_table_path}
-    (
-        valor_usd DOUBLE,
-        valor_brl DOUBLE,
-        criptomoeda STRING,
-        moeda_original STRING,
-        taxa_conversao_usd_brl DOUBLE,
-        timestamp TIMESTAMP
-    )
-    USING DELTA
-    COMMENT 'Tabela Delta para armazenar dados históricos de Bitcoin'
-""")
-
-# Salvar como Delta Table (modo append)
+# Salvar como Delta Table (modo append se a tabela já existir)
 df.write \
     .format("delta") \
     .mode("append") \
