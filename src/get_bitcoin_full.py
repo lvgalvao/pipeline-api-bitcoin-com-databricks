@@ -103,6 +103,12 @@ dados_bitcoin_tratado = tratar_dados_bitcoin(Dados_bitcoin, taxa_usd_brl)
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC CREATE SCHEMA IF NOT EXISTS pipeline_api_bitcoin.bitcoin_data
+# MAGIC COMMENT 'Schema para armazenar dados de Bitcoin processados';
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ## 4. Criando Spark DataFrame
 # MAGIC
@@ -121,7 +127,7 @@ df.printSchema()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 5. Salvando em JSON
+# MAGIC ## 5. Salvando em JSON usando PySpark
 
 # COMMAND ----------
 
@@ -131,13 +137,13 @@ event_ts = dados_bitcoin_tratado[0]["timestamp"]
 # Converte para formato seguro para nome de arquivo
 ts = datetime.fromisoformat(event_ts).strftime("%Y%m%d_%H%M%S_%f")
 
-path = (
-    f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/"
-    f"bitcoin_{ts}.json"
-)
+# Caminho do arquivo JSON no schema lakehouse
+json_path = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.json"
 
-with open(path, "w", encoding='utf-8') as f:
-    json.dump(dados_bitcoin_tratado, f, indent=2, ensure_ascii=False)
+# Salvar como JSON usando PySpark DataFrame
+df.write \
+    .mode("overwrite") \
+    .json(json_path)
 
 # COMMAND ----------
 
@@ -272,8 +278,24 @@ df.write \
 
 # COMMAND ----------
 
-# Caminho da tabela Delta no Unity Catalog (schema lakehouse)
-delta_table_path = "pipeline_api_bitcoin.lakehouse.bitcoin_data"
+# Caminho da tabela Delta no Unity Catalog (schema bitcoin_data)
+delta_table_path = "pipeline_api_bitcoin.bitcoin_data.bitcoin_data"
+
+# Criar a tabela Delta explicitamente (se não existir)
+# type: ignore - spark está disponível no ambiente Databricks
+spark.sql(f"""
+    CREATE TABLE IF NOT EXISTS {delta_table_path}
+    (
+        valor_usd DOUBLE,
+        valor_brl DOUBLE,
+        criptomoeda STRING,
+        moeda_original STRING,
+        taxa_conversao_usd_brl DOUBLE,
+        timestamp STRING
+    )
+    USING DELTA
+    COMMENT 'Tabela Delta para armazenar dados históricos de Bitcoin'
+""")  # noqa: F821
 
 # Salvar como Delta Table (modo append se a tabela já existir)
 df.write \
@@ -330,7 +352,7 @@ print(f"   Timestamp: {dados_bitcoin_tratado[0]['timestamp']}")
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT * FROM pipeline_api_bitcoin.lakehouse.bitcoin_data
+# MAGIC SELECT * FROM pipeline_api_bitcoin.bitcoin_data.bitcoin_data
 # MAGIC ORDER BY timestamp DESC
 # MAGIC LIMIT 10
 
@@ -342,7 +364,7 @@ print(f"   Timestamp: {dados_bitcoin_tratado[0]['timestamp']}")
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC DESCRIBE HISTORY pipeline_api_bitcoin.lakehouse.bitcoin_data
+# MAGIC DESCRIBE HISTORY pipeline_api_bitcoin.bitcoin_data.bitcoin_data
 
 # COMMAND ----------
 
