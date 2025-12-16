@@ -30,15 +30,18 @@
 # COMMAND ----------
 
 # Exemplos de strings
-# TODO: Digite o código aqui:
+nome_moeda = "Bitcoin"
+simbolo = 'BTC'
+par_moeda = "BTC-USD"
+timestamp = "2025-12-16T19:30:00Z"
 
-
-
-
-
-
+print(f"Nome: {nome_moeda}")
+print(f"Símbolo: {simbolo}")
+print(f"Par: {par_moeda}")
+print(f"Timestamp: {timestamp}")
 
 # Verificando o tipo
+print(f"\nTipo de 'nome_moeda': {type(nome_moeda)}")
 
 # COMMAND ----------
 
@@ -50,17 +53,20 @@
 # COMMAND ----------
 
 # Exemplos de inteiros
-# TODO: Digite o código aqui:
+quantidade = 10
+volume_transacoes = 1250
+ano = 2025
 
-
-
-
-
+print(f"Quantidade: {quantidade}")
+print(f"Volume: {volume_transacoes}")
+print(f"Ano: {ano}")
 
 # Verificando o tipo
+print(f"\nTipo de 'quantidade': {type(quantidade)}")
 
 # Operações com inteiros
-
+soma = quantidade + volume_transacoes
+print(f"Soma: {soma}")
 
 # COMMAND ----------
 
@@ -72,17 +78,20 @@
 # COMMAND ----------
 
 # Exemplos de floats
-# TODO: Digite o código aqui:
+preco = 45000.50
+variacao_percentual = 2.5
+volume_24h = 1250000000.75
 
-
-
-
-
+print(f"Preço: ${preco:,.2f}")
+print(f"Variação: {variacao_percentual}%")
+print(f"Volume 24h: ${volume_24h:,.2f}")
 
 # Verificando o tipo
+print(f"\nTipo de 'preco': {type(preco)}")
 
 # Operações com floats
-
+preco_com_taxa = preco * 1.01
+print(f"Preço com taxa: ${preco_com_taxa:,.2f}")
 
 # COMMAND ----------
 
@@ -94,18 +103,21 @@
 # COMMAND ----------
 
 # Exemplos de booleanos
-# TODO: Digite o código aqui:
+ativo = True
+disponivel = False
+preco_maior_que_45000 = True
 
-
-
-
-
+print(f"Ativo: {ativo}")
+print(f"Disponível: {disponivel}")
+print(f"Preço > 45000: {preco_maior_que_45000}")
 
 # Verificando o tipo
+print(f"\nTipo de 'ativo': {type(ativo)}")
 
 # Operações com booleanos
-
-
+print(f"Negado: {not ativo}")
+print(f"E (AND): {ativo and disponivel}")
+print(f"Ou (OR): {ativo or disponivel}")
 
 # COMMAND ----------
 
@@ -115,14 +127,17 @@
 # COMMAND ----------
 
 # Criando variáveis de cada tipo
-# TODO: Digite o código aqui:
-
-
+nome = "Bitcoin"           # str
+preco = 45000.50           # float
+quantidade = 10            # int
+ativo = True               # bool
 
 # Verificando todos os tipos
-
-
-
+print("=== Tipos de Variáveis ===")
+print(f"nome = '{nome}' → Tipo: {type(nome).__name__}")
+print(f"preco = {preco} → Tipo: {type(preco).__name__}")
+print(f"quantidade = {quantidade} → Tipo: {type(quantidade).__name__}")
+print(f"ativo = {ativo} → Tipo: {type(ativo).__name__}")
 
 # COMMAND ----------
 
@@ -134,16 +149,20 @@
 # COMMAND ----------
 
 # Simulando dados da API usando tipos simples
-# TODO: Digite o código aqui:
+moeda = "BTC-USD"                    # str
+preco_atual = 45230.75               # float
+timestamp = "2025-12-16T19:30:00Z"  # str
+volume_24h = 1250000000.50           # float
+transacoes = 15000                    # int
+ativo = True                          # bool
 
-
-
-
-
-
-
-
-
+print("=== Dados da API Coinbase ===")
+print(f"Par de moedas: {moeda}")
+print(f"Preço atual: ${preco_atual:,.2f}")
+print(f"Timestamp: {timestamp}")
+print(f"Volume 24h: ${volume_24h:,.2f}")
+print(f"Transações: {transacoes:,}")
+print(f"Ativo: {ativo}")
 
 # COMMAND ----------
 
@@ -162,8 +181,8 @@
 # COMMAND ----------
 
 # Print simples
-# TODO: Digite o código aqui:
-
+print("Olá, mundo!")
+print("Bem-vindo ao pipeline de dados Bitcoin!")
 
 # COMMAND ----------
 
@@ -173,10 +192,11 @@
 # COMMAND ----------
 
 # Print com variáveis
-# TODO: Digite o código aqui:
+nome_moeda = "Bitcoin"
+preco = 45000
 
-
-
+print("Moeda:", nome_moeda)
+print("Preço:", preco)
 
 # COMMAND ----------
 
@@ -188,12 +208,13 @@
 # COMMAND ----------
 
 # Usando f-strings (recomendado!)
-# TODO: Digite o código aqui:
+nome = "Bitcoin"
+preco = 45230.75
+variacao = 2.5
 
-
-
-
-
+print(f"Moeda: {nome}")
+print(f"Preço: ${preco:,.2f}")
+print(f"Variação: {variacao}%")
 
 # COMMAND ----------
 
@@ -214,14 +235,17 @@
 # COMMAND ----------
 
 # Criando listas
-# TODO: Digite o código aqui:
+precos = [45000, 45100, 45230, 45300]
+moedas = ["Bitcoin", "Ethereum", "Litecoin"]
+dados_mistos = ["BTC-USD", 45230.75, True]
 
-
-
-
-
+print("=== Exemplos de Listas ===")
+print(f"Preços: {precos}")
+print(f"Moedas: {moedas}")
+print(f"Dados mistos: {dados_mistos}")
 
 # Verificando o tipo
+print(f"\nTipo de 'precos': {type(precos)}")
 
 # COMMAND ----------
 
@@ -232,13 +256,16 @@
 
 # COMMAND ----------
 
-# TODO: Digite o código aqui:
+precos = [45000, 45100, 45230, 45300]
 
-
-
-
+print(f"Lista completa: {precos}")
+print(f"Primeiro preço (índice 0): {precos[0]}")
+print(f"Segundo preço (índice 1): {precos[1]}")
+print(f"Último preço (índice -1): {precos[-1]}")
+print(f"Penúltimo preço (índice -2): {precos[-2]}")
 
 # Tamanho da lista
+print(f"\nTamanho da lista: {len(precos)}")
 
 # COMMAND ----------
 
@@ -247,22 +274,26 @@
 
 # COMMAND ----------
 
-# TODO: Digite o código aqui:
+precos = [45000, 45100, 45230]
 
-
+print(f"Lista original: {precos}")
 
 # Adicionar elemento no final
-
+precos.append(45300)
+print(f"Após append(45300): {precos}")
 
 # Adicionar elemento em posição específica
-
+precos.insert(1, 45050)
+print(f"Após insert(1, 45050): {precos}")
 
 # Remover elemento
-
+precos.remove(45100)
+print(f"Após remove(45100): {precos}")
 
 # Último elemento (remove e retorna)
-
-
+ultimo = precos.pop()
+print(f"Último elemento removido: {ultimo}")
+print(f"Lista após pop(): {precos}")
 
 # COMMAND ----------
 
@@ -274,14 +305,17 @@
 # COMMAND ----------
 
 # Criando dicionários
-# TODO: Digite o código aqui:
+dados_bitcoin = {
+    "moeda": "BTC-USD",
+    "preco": 45230.75,
+    "volume": 1250000000
+}
 
-
-
-
-
+print("=== Exemplo de Dicionário ===")
+print(dados_bitcoin)
 
 # Verificando o tipo
+print(f"\nTipo de 'dados_bitcoin': {type(dados_bitcoin)}")
 
 # COMMAND ----------
 
@@ -292,17 +326,20 @@
 
 # COMMAND ----------
 
-# TODO: Digite o código aqui:
-
-
-
+dados_bitcoin = {
+    "moeda": "BTC-USD",
+    "preco": 45230.75,
+    "volume": 1250000000
+}
 
 # Acessando valores
-
-
+print(f"Moeda: {dados_bitcoin['moeda']}")
+print(f"Preço: ${dados_bitcoin['preco']:,.2f}")
+print(f"Volume: ${dados_bitcoin['volume']:,.2f}")
 
 # Usando get() (mais seguro - retorna None se a chave não existir)
-
+print(f"\nPreço (com get): ${dados_bitcoin.get('preco'):,.2f}")
+print(f"Timestamp (com get): {dados_bitcoin.get('timestamp', 'Não disponível')}")
 
 # COMMAND ----------
 
@@ -311,23 +348,30 @@
 
 # COMMAND ----------
 
-# TODO: Digite o código aqui:
+dados = {
+    "moeda": "BTC-USD",
+    "preco": 45230.75
+}
 
-
-
-
+print("=== Operações com Dicionário ===")
+print(f"Dicionário original: {dados}")
 
 # Obter todas as chaves
+print(f"\nChaves: {list(dados.keys())}")
 
 # Obter todos os valores
+print(f"Valores: {list(dados.values())}")
 
 # Obter pares chave-valor
+print(f"Items: {list(dados.items())}")
 
 # Adicionar novo par chave-valor
-
+dados["volume"] = 1250000000
+print(f"\nApós adicionar 'volume': {dados}")
 
 # Atualizar valor existente
-
+dados["preco"] = 45300.00
+print(f"Após atualizar 'preco': {dados}")
 
 # COMMAND ----------
 
@@ -339,18 +383,23 @@
 # COMMAND ----------
 
 # Simulando resposta completa da API Coinbase
-# TODO: Digite o código aqui:
+dados_api = {
+    "data": {
+        "base": "BTC",
+        "currency": "USD",
+        "amount": "45230.75"
+    },
+    "timestamp": "2025-12-16T19:30:00Z"
+}
 
-
-
-
-
-
-
+print("=== Dicionário Aninhado ===")
+print(f"Estrutura completa:\n{dados_api}")
 
 # Acessando valores aninhados
-
-
+print(f"\nMoeda base: {dados_api['data']['base']}")
+print(f"Moeda quote: {dados_api['data']['currency']}")
+print(f"Preço: ${dados_api['data']['amount']}")
+print(f"Timestamp: {dados_api['timestamp']}")
 
 # COMMAND ----------
 
@@ -360,18 +409,22 @@
 # COMMAND ----------
 
 # Print de lista
-# TODO: Digite o código aqui:
-
+precos = [45000, 45100, 45230, 45300]
+print("Histórico de preços:", precos)
 
 # Print de dicionário
-
-
-
-
+dados_bitcoin = {
+    "moeda": "BTC-USD",
+    "preco": 45230.75,
+    "volume": 1250000000
+}
+print("\nDados completos:")
+print(dados_bitcoin)
 
 # Print formatado de dicionário
-
-
+print("\n=== Dados Formatados ===")
+for chave, valor in dados_bitcoin.items():
+    print(f"{chave}: {valor}")
 
 # COMMAND ----------
 
@@ -399,17 +452,20 @@
 # COMMAND ----------
 
 # Exemplos de métodos de string
-# TODO: Digite o código aqui:
+moeda = "bitcoin"
 
-
-
-
+print(f"Original: {moeda}")
+print(f"Upper (maiúsculas): {moeda.upper()}")
+print(f"Capitalize (primeira maiúscula): {moeda.capitalize()}")
+print(f"Replace: {moeda.replace('bitcoin', 'BTC')}")
 
 # Métodos úteis para dados de API
+par_moeda = "BTC-USD"
 
-
-
-
+print(f"\nPar original: {par_moeda}")
+print(f"Split por '-': {par_moeda.split('-')}")
+print(f"Starts with 'BTC': {par_moeda.startswith('BTC')}")
+print(f"Contains 'USD': {'USD' in par_moeda}")
 
 # COMMAND ----------
 
@@ -419,16 +475,19 @@
 # COMMAND ----------
 
 # Métodos de lista
-# TODO: Digite o código aqui:
+precos = [45000, 45100, 45230]
 
-
-
+print(f"Lista original: {precos}")
+print(f"Tamanho: {len(precos)}")
+print(f"Último preço: {precos[-1]}")
 
 # Adicionar elemento
-
+precos.append(45300)
+print(f"Após append: {precos}")
 
 # Remover elemento
-
+precos.remove(45100)
+print(f"Após remove: {precos}")
 
 # COMMAND ----------
 
@@ -438,16 +497,20 @@
 # COMMAND ----------
 
 # Métodos de dicionário
-# TODO: Digite o código aqui:
+dados = {
+    "moeda": "BTC-USD",
+    "preco": 45230.75,
+    "volume": 1250000000
+}
 
-
-
-
-
-
+print("=== Métodos de Dicionário ===")
+print(f"Chaves: {list(dados.keys())}")
+print(f"Valores: {list(dados.values())}")
+print(f"Items: {list(dados.items())}")
 
 # Acessar valores
-
+print(f"\nPreço: {dados.get('preco')}")
+print(f"Timestamp: {dados.get('timestamp', 'Não disponível')}")
 
 # COMMAND ----------
 
@@ -457,25 +520,32 @@
 # COMMAND ----------
 
 # Simulando dados brutos da API
-# TODO: Digite o código aqui:
-
-
-
-
+dados_brutos = {
+    "data": {
+        "base": "BTC",
+        "currency": "USD",
+        "amount": "45230.75"
+    }
+}
 
 # Extrair e transformar dados
-
-
+moeda_base = dados_brutos["data"]["base"]
+moeda_quote = dados_brutos["data"]["currency"]
+preco_str = dados_brutos["data"]["amount"]
 
 # Converter string para float
+preco_float = float(preco_str)
 
 # Criar novo dicionário formatado
+dados_formatados = {
+    "par": f"{moeda_base}-{moeda_quote}",
+    "preco": preco_float,
+    "timestamp": "2025-12-16T19:30:00Z"
+}
 
-
-
-
-
-
+print("=== Dados Transformados ===")
+for chave, valor in dados_formatados.items():
+    print(f"{chave}: {valor}")
 
 # COMMAND ----------
 
@@ -496,20 +566,26 @@
 # COMMAND ----------
 
 # Dados simulados da API Coinbase
-# TODO: Digite o código aqui:
-
-
-
-
-
+dados_api = {
+    "data": {
+        "base": "BTC",
+        "currency": "USD",
+        "amount": "45230.75"
+    },
+    "timestamp": "2025-12-16T19:30:00Z"
+}
 
 # TODO: Extraia o preço e converta para float
+preco = float(dados_api["data"]["amount"])
 
 # TODO: Crie uma string formatada com o par de moedas
+par_moeda = f"{dados_api['data']['base']}-{dados_api['data']['currency']}"
 
 # TODO: Use print com f-string para exibir os dados
-
-
+print("=== Dados Processados ===")
+print(f"Par de moedas: {par_moeda}")
+print(f"Preço: ${preco:,.2f}")
+print(f"Timestamp: {dados_api['timestamp']}")
 
 # COMMAND ----------
 

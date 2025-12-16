@@ -491,27 +491,18 @@ pipeline-api-bitcoin-com-databricks/
 
 ## 🔄 **Fluxo Completo do Pipeline**
 
-```
-┌─────────────────┐
-│  API Coinbase  │───┐
-│  (Bitcoin USD) │   │
-└─────────────────┘   │
-                      │
-┌─────────────────┐   │    ┌──────────────┐    ┌─────────────┐
-│ API Currency    │───┼───▶│  TRANSFORM   │───▶│    LOAD     │
-│ Freaks          │   │    │              │    │             │
-│ (USD-BRL Rate)  │   │    │ • Convert    │    │ Delta Table │
-└─────────────────┘   │    │   USD→BRL    │    │ Unity       │
-                      │    │ • Add        │    │ Catalog     │
-                      │    │   timestamp  │    │             │
-                      │    │ • Structure  │    │             │
-                      │    │   data      │    │             │
-                      │    └──────────────┘    └─────────────┘
-                      │
-                      │
-                  ┌───▼───┐
-                  │EXTRACT│
-                  └───────┘
+```mermaid
+flowchart LR
+    A["🌐 API Coinbase<br/><b>Bitcoin USD</b>"] --> E["📥 EXTRACT"]
+    B["🌐 API CurrencyFreaks<br/><b>USD-BRL Rate</b>"] --> E
+    E --> T["🔄 TRANSFORM<br/>• Convert USD→BRL<br/>• Add timestamp<br/>• Structure data"]
+    T --> L["💾 LOAD<br/>Delta Table<br/>Unity Catalog"]
+    
+    style A fill:#e1f5ff,stroke:#0066cc,stroke-width:2px
+    style B fill:#e1f5ff,stroke:#0066cc,stroke-width:2px
+    style E fill:#fff4e1,stroke:#ff9900,stroke-width:2px
+    style T fill:#ffe1f5,stroke:#cc0066,stroke-width:2px
+    style L fill:#e1ffe1,stroke:#00cc66,stroke-width:2px
 ```
 
 ---

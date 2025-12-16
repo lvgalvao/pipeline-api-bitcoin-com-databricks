@@ -39,15 +39,13 @@
 # COMMAND ----------
 
 # MAGIC %sql
-# TODO: Escreva a query SQL aqui:
-# MAGIC -- Digite o SQL abaixo (descomente e complete):
-# MAGIC -- SELECT
-# MAGIC -- valor_brl        AS last_price,
-# MAGIC -- timestamp        AS last_timestamp
-# MAGIC -- FROM pipeline_api_bitcoin.bitcoin_data.bitcoin_data
-# MAGIC -- WHERE criptomoeda = 'BTC'
-# MAGIC -- ORDER BY timestamp DESC
-# MAGIC -- LIMIT 1
+# MAGIC SELECT
+# MAGIC   valor_brl        AS last_price,
+# MAGIC   timestamp        AS last_timestamp
+# MAGIC FROM pipeline_api_bitcoin.bitcoin_data.bitcoin_data
+# MAGIC WHERE criptomoeda = 'BTC'
+# MAGIC ORDER BY timestamp DESC
+# MAGIC LIMIT 1
 
 # COMMAND ----------
 
@@ -124,15 +122,13 @@
 # COMMAND ----------
 
 # MAGIC %sql
-# TODO: Escreva a query SQL aqui:
-# MAGIC -- Digite o SQL abaixo (descomente e complete):
-# MAGIC -- SELECT
-# MAGIC -- valor_brl  AS max_price,
-# MAGIC -- timestamp  AS max_timestamp
-# MAGIC -- FROM pipeline_api_bitcoin.bitcoin_data.bitcoin_data
-# MAGIC -- WHERE criptomoeda = 'BTC'
-# MAGIC -- ORDER BY valor_brl DESC, timestamp DESC
-# MAGIC -- LIMIT 1
+# MAGIC SELECT
+# MAGIC   valor_brl  AS max_price,
+# MAGIC   timestamp  AS max_timestamp
+# MAGIC FROM pipeline_api_bitcoin.bitcoin_data.bitcoin_data
+# MAGIC WHERE criptomoeda = 'BTC'
+# MAGIC ORDER BY valor_brl DESC, timestamp DESC
+# MAGIC LIMIT 1
 
 # COMMAND ----------
 
@@ -198,15 +194,13 @@
 # COMMAND ----------
 
 # MAGIC %sql
-# TODO: Escreva a query SQL aqui:
-# MAGIC -- Digite o SQL abaixo (descomente e complete):
-# MAGIC -- SELECT
-# MAGIC -- valor_brl  AS min_price,
-# MAGIC -- timestamp  AS min_timestamp
-# MAGIC -- FROM pipeline_api_bitcoin.bitcoin_data.bitcoin_data
-# MAGIC -- WHERE criptomoeda = 'BTC'
-# MAGIC -- ORDER BY valor_brl ASC, timestamp DESC
-# MAGIC -- LIMIT 1
+# MAGIC SELECT
+# MAGIC   valor_brl  AS min_price,
+# MAGIC   timestamp  AS min_timestamp
+# MAGIC FROM pipeline_api_bitcoin.bitcoin_data.bitcoin_data
+# MAGIC WHERE criptomoeda = 'BTC'
+# MAGIC ORDER BY valor_brl ASC, timestamp DESC
+# MAGIC LIMIT 1
 
 # COMMAND ----------
 
