@@ -39,8 +39,9 @@ def extrair_dados_bitcoin():
     return resposta.json()
 
 def extrair_cotacao_usd_brl():
-    """Extrai a cotação USD-BRL da API AwesomeAPI."""
-    url = 'https://economia.awesomeapi.com.br/json/last/USD-BRL'
+    """Extrai a cotação USD-BRL da API CurrencyFreaks."""
+    api_key = 'bf8ddcbf744d4e7897e836941c32e39f'
+    url = f'https://api.currencyfreaks.com/v2.0/rates/latest?apikey={api_key}'
     resposta = requests.get(url)
     return resposta.json()
 
@@ -72,7 +73,7 @@ Dados_bitcoin = extrair_dados_bitcoin()
 dados_cotacao = extrair_cotacao_usd_brl()
 
 # Extraindo a taxa de conversão USD-BRL
-taxa_usd_brl = float(dados_cotacao['USDBRL']['bid'])
+taxa_usd_brl = float(dados_cotacao['rates']['BRL'])
 
 # Tratando os dados e convertendo para BRL
 dados_bitcoin_tratado = tratar_dados_bitcoin(Dados_bitcoin, taxa_usd_brl)
