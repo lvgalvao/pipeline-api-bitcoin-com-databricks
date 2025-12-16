@@ -20,7 +20,9 @@ def extrair_dados_bitcoin():
 
 def extrair_cotacao_usd_brl():
     """Extrai a cotação USD-BRL da API CurrencyFreaks."""
-    api_key = 'bf8ddcbf744d4e7897e836941c32e39f'
+    # Buscar API key do Databricks Secrets
+    # Formato: dbutils.secrets.get(scope="nome_do_scope", key="nome_da_key")
+    api_key = dbutils.secrets.get(scope="currencyfreaks", key="api_key")
     url = f'https://api.currencyfreaks.com/v2.0/rates/latest?apikey={api_key}'
     resposta = requests.get(url)
     return resposta.json()
