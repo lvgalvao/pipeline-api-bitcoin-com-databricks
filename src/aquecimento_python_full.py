@@ -351,6 +351,38 @@ print(f"Timestamp: {dados_api['timestamp']}")
 # MAGIC %md
 # MAGIC ---
 # MAGIC
+# MAGIC ## 🔧 5. Funções
+# MAGIC
+# MAGIC Funções são blocos de código reutilizáveis que executam uma tarefa específica. Elas ajudam a organizar o código e evitar repetição.
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Criando uma Função de Soma
+
+# COMMAND ----------
+
+# Criando uma função para somar dois números
+def somar(a, b):
+    """Função que soma dois números e retorna o resultado."""
+    resultado = a + b
+    return resultado
+
+# Usando a função
+numero1 = 10
+numero2 = 20
+soma = somar(numero1, numero2)
+
+print(f"{numero1} + {numero2} = {soma}")
+
+# Podemos usar diretamente também
+print(f"5 + 3 = {somar(5, 3)}")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ---
+# MAGIC
 # MAGIC ## ✅ Resumo
 # MAGIC
 # MAGIC Neste aquecimento, você aprendeu:
@@ -359,6 +391,7 @@ print(f"Timestamp: {dados_api['timestamp']}")
 # MAGIC 2. **Variáveis**: Como armazenar dados em Python (str, int, float)
 # MAGIC 3. **Dicionários**: Como trabalhar com dados estruturados de APIs
 # MAGIC 4. **Métodos Úteis para ETL**: Como transformar dados brutos em dados formatados
+# MAGIC 5. **Funções**: Como criar blocos de código reutilizáveis
 # MAGIC
 # MAGIC Esses são os fundamentos que você vai usar durante todo o projeto de ETL!
 # MAGIC

@@ -283,6 +283,30 @@ dados_api = {
 # MAGIC %md
 # MAGIC ---
 # MAGIC
+# MAGIC ## 🔧 5. Funções
+# MAGIC
+# MAGIC Funções são blocos de código reutilizáveis que executam uma tarefa específica. Elas ajudam a organizar o código e evitar repetição.
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### Criando uma Função de Soma
+
+# COMMAND ----------
+
+# Criando uma função para somar dois números
+# TODO: Digite o código aqui:
+
+
+# Usando a função
+# TODO: Digite o código aqui:
+
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ---
+# MAGIC
 # MAGIC ## ✅ Resumo
 # MAGIC
 # MAGIC Neste aquecimento, você aprendeu:
@@ -291,6 +315,7 @@ dados_api = {
 # MAGIC 2. **Variáveis**: Como armazenar dados em Python (str, int, float)
 # MAGIC 3. **Dicionários**: Como trabalhar com dados estruturados de APIs
 # MAGIC 4. **Métodos Úteis para ETL**: Como transformar dados brutos em dados formatados
+# MAGIC 5. **Funções**: Como criar blocos de código reutilizáveis
 # MAGIC
 # MAGIC Esses são os fundamentos que você vai usar durante todo o projeto de ETL!
 # MAGIC
