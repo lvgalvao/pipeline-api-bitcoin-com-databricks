@@ -12,6 +12,12 @@ from datetime import datetime
 
 # COMMAND ----------
 
+# Criar widget para receber parâmetros do pipeline (Key-Value)
+# O valor será passado através da configuração Key-Value do pipeline
+dbutils.widgets.text("api_key", "", "API Key CurrencyFreaks")
+
+# COMMAND ----------
+
 def extrair_dados_bitcoin():
     """Extrai o JSON completo da API da Coinbase."""
     url = 'https://api.coinbase.com/v2/prices/spot'
@@ -20,9 +26,9 @@ def extrair_dados_bitcoin():
 
 def extrair_cotacao_usd_brl():
     """Extrai a cotação USD-BRL da API CurrencyFreaks."""
-    # Buscar API key do Databricks Secrets
-    # Formato: dbutils.secrets.get(scope="nome_do_scope", key="nome_da_key")
-    api_key = dbutils.secrets.get(scope="currencyfreaks", key="api_key")
+    # Buscar API key dos parâmetros do pipeline (Key-Value)
+    # Os valores configurados no pipeline são acessíveis via widgets
+    api_key = dbutils.widgets.get("api_key")
     url = f'https://api.currencyfreaks.com/v2.0/rates/latest?apikey={api_key}'
     resposta = requests.get(url)
     return resposta.json()
