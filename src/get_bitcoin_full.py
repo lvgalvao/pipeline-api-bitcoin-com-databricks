@@ -20,7 +20,7 @@
 # COMMAND ----------
 
 import requests
-import json
+import pandas as pd
 from datetime import datetime
 
 # No Databricks, o Spark já está disponível como 'spark', não precisa criar SparkSession
@@ -110,24 +110,22 @@ dados_bitcoin_tratado = tratar_dados_bitcoin(Dados_bitcoin, taxa_usd_brl)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 4. Criando Spark DataFrame
+# MAGIC ## 4. Criando DataFrame Pandas
 # MAGIC
-# MAGIC No Databricks, o objeto `spark` (SparkSession) já está disponível automaticamente.
+# MAGIC Vamos criar um DataFrame Pandas para salvar os arquivos de forma simples.
 
 # COMMAND ----------
 
-# Criar Spark DataFrame a partir dos dados tratados
-# No Databricks, 'spark' já está disponível automaticamente
-# type: ignore - spark está disponível no ambiente Databricks
-df = spark.createDataFrame(dados_bitcoin_tratado)  # noqa: F821
+# Criar DataFrame Pandas a partir dos dados tratados
+df_pandas = pd.DataFrame(dados_bitcoin_tratado)
 
-# Mostrar schema
-df.printSchema()
+# Mostrar dados
+print(df_pandas)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 5. Salvando em JSON usando PySpark
+# MAGIC ## 5. Salvando em JSON usando Pandas
 
 # COMMAND ----------
 
@@ -137,13 +135,12 @@ event_ts = dados_bitcoin_tratado[0]["timestamp"]
 # Converte para formato seguro para nome de arquivo
 ts = event_ts.strftime("%Y%m%d_%H%M%S_%f")
 
-# Caminho do arquivo JSON no schema lakehouse
-json_path = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.json"
+# Caminho do arquivo JSON
+json_file = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.json"
 
-# Salvar como JSON usando PySpark DataFrame
-df.write \
-    .mode("overwrite") \
-    .json(json_path)
+# Salvar como JSON usando Pandas
+df_pandas.to_json(json_file, orient='records', date_format='iso', indent=2)
+print(f"✅ Arquivo JSON salvo: {json_file}")
 
 # COMMAND ----------
 
@@ -184,14 +181,12 @@ df.write \
 
 # COMMAND ----------
 
-# Caminho do arquivo CSV no schema lakehouse
-csv_path = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.csv"
+# Caminho do arquivo CSV
+csv_file = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.csv"
 
-# Salvar como CSV usando PySpark
-df.write \
-    .mode("overwrite") \
-    .option("header", "true") \
-    .csv(csv_path)
+# Salvar como CSV usando Pandas
+df_pandas.to_csv(csv_file, index=False)
+print(f"✅ Arquivo CSV salvo: {csv_file}")
 
 # COMMAND ----------
 
@@ -234,18 +229,33 @@ df.write \
 
 # COMMAND ----------
 
-# Caminho do arquivo Parquet no schema lakehouse
-parquet_path = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.parquet"
+# Caminho do arquivo Parquet
+parquet_file = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.parquet"
 
-# Salvar como Parquet usando PySpark
-df.write \
-    .mode("overwrite") \
-    .parquet(parquet_path)
+# Salvar como Parquet usando Pandas
+df_pandas.to_parquet(parquet_file, index=False)
+print(f"✅ Arquivo Parquet salvo: {parquet_file}")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 8. Salvando como Delta Table
+# MAGIC ## 8. Convertendo Pandas para PySpark e Salvando como Delta Table
+# MAGIC
+# MAGIC Agora vamos converter o DataFrame Pandas para PySpark para salvar no Delta Table.
+
+# COMMAND ----------
+
+# Converter DataFrame Pandas para PySpark
+# type: ignore - spark está disponível no ambiente Databricks
+df_spark = spark.createDataFrame(df_pandas)  # noqa: F821
+
+# Mostrar schema
+df_spark.printSchema()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## 9. Salvando como Delta Table
 # MAGIC
 # MAGIC ### 🎯 O que é Delta Table?
 # MAGIC
@@ -281,8 +291,8 @@ df.write \
 # Caminho da tabela Delta no Unity Catalog (schema bitcoin_data)
 delta_table_path = "pipeline_api_bitcoin.bitcoin_data.bitcoin_data"
 
-# Salvar como Delta Table (modo append se a tabela já existir)
-df.write \
+# Salvar como Delta Table usando o DataFrame PySpark (modo append se a tabela já existir)
+df_spark.write \
     .format("delta") \
     .mode("append") \
     .option("mergeSchema", "true") \
@@ -291,7 +301,7 @@ df.write \
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 9. Convertendo Delta Table para DataFrame
+# MAGIC ## 10. Convertendo Delta Table para DataFrame
 
 # COMMAND ----------
 
@@ -337,12 +347,13 @@ df_delta.show(truncate=False)
 # MAGIC 1. ✅ **Extração**: Busca dados da API Coinbase e cotação USD-BRL
 # MAGIC 2. ✅ **Transformação**: Trata dados, converte para BRL e adiciona timestamp
 # MAGIC 3. ✅ **Infraestrutura**: Cria Catalog e Schema Lakehouse no Unity Catalog
-# MAGIC 4. ✅ **Carga em múltiplos formatos usando PySpark**:
-# MAGIC    - **JSON**: Formato texto legível, ideal para dados brutos
-# MAGIC    - **CSV**: Formato texto universal, legível por humanos (salvo com PySpark)
-# MAGIC    - **Parquet**: Formato binário columnar, otimizado para Big Data (salvo com PySpark)
-# MAGIC    - **Delta Table**: Formato com ACID transactions e time travel
-# MAGIC 5. ✅ **Conversão**: Delta Table → Spark DataFrame
+# MAGIC 4. ✅ **Carga em múltiplos formatos usando Pandas**:
+# MAGIC    - **JSON**: Formato texto legível, ideal para dados brutos (salvo com Pandas)
+# MAGIC    - **CSV**: Formato texto universal, legível por humanos (salvo com Pandas)
+# MAGIC    - **Parquet**: Formato binário columnar, otimizado para Big Data (salvo com Pandas)
+# MAGIC 5. ✅ **Conversão Pandas → PySpark**: Converte DataFrame Pandas para PySpark
+# MAGIC 6. ✅ **Delta Table**: Salva no Delta Table usando PySpark (formato com ACID transactions e time travel)
+# MAGIC 7. ✅ **Conversão**: Delta Table → Spark DataFrame
 # MAGIC
 # MAGIC **Comparação de Formatos:**
 # MAGIC - 📄 **CSV**: Legível, maior, mais lento → Use para debugging e dados pequenos
