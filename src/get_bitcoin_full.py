@@ -22,8 +22,6 @@
 import requests
 import json
 from datetime import datetime
-import os
-import glob
 
 # No Databricks, o Spark já está disponível como 'spark', não precisa criar SparkSession
 
@@ -70,12 +68,12 @@ def tratar_dados_bitcoin(dados_json, taxa_usd_brl):
     return dados_tratados
 
 # Extraindo dados
-dados_json = extrair_dados_bitcoin()
-cotacao_json = extrair_cotacao_usd_brl()
-taxa_usd_brl = float(cotacao_json['USDBRL']['bid'])
+Dados_bitcoin = extrair_dados_bitcoin()
+dados_cotacao = extrair_cotacao_usd_brl()
+taxa_usd_brl = float(dados_cotacao['USDBRL']['bid'])
 
 # Tratando os dados e convertendo para BRL
-dados_bitcoin = tratar_dados_bitcoin(dados_json, taxa_usd_brl)
+dados_bitcoin_tratado = tratar_dados_bitcoin(Dados_bitcoin, taxa_usd_brl)
 
 # COMMAND ----------
 
@@ -91,13 +89,13 @@ dados_bitcoin = tratar_dados_bitcoin(dados_json, taxa_usd_brl)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC CREATE SCHEMA IF NOT EXISTS pipeline_api_bitcoin.datalake
-# MAGIC COMMENT 'Schema Datalake para salvar dados brutos e heterogêneos';
+# MAGIC CREATE SCHEMA IF NOT EXISTS pipeline_api_bitcoin.lakehouse
+# MAGIC COMMENT 'Schema Lakehouse para salvar dados processados';
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC CREATE VOLUME IF NOT EXISTS pipeline_api_bitcoin.datalake.raw_files
+# MAGIC CREATE VOLUME IF NOT EXISTS pipeline_api_bitcoin.lakehouse.raw_files
 # MAGIC COMMENT 'Volume para arquivos brutos de ingestão inicial';
 
 # COMMAND ----------
@@ -112,7 +110,7 @@ dados_bitcoin = tratar_dados_bitcoin(dados_json, taxa_usd_brl)
 # Criar Spark DataFrame a partir dos dados tratados
 # No Databricks, 'spark' já está disponível automaticamente
 # type: ignore - spark está disponível no ambiente Databricks
-df = spark.createDataFrame(dados_bitcoin)  # noqa: F821
+df = spark.createDataFrame(dados_bitcoin_tratado)  # noqa: F821
 
 # Mostrar schema
 df.printSchema()
@@ -125,18 +123,18 @@ df.printSchema()
 # COMMAND ----------
 
 # Pega o timestamp do próprio evento
-event_ts = dados_bitcoin[0]["timestamp"]
+event_ts = dados_bitcoin_tratado[0]["timestamp"]
 
 # Converte para formato seguro para nome de arquivo
 ts = datetime.fromisoformat(event_ts).strftime("%Y%m%d_%H%M%S_%f")
 
 path = (
-    f"/Volumes/pipeline_api_bitcoin/datalake/raw_files/"
+    f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/"
     f"bitcoin_{ts}.json"
 )
 
 with open(path, "w", encoding='utf-8') as f:
-    json.dump(dados_bitcoin, f, indent=2, ensure_ascii=False)
+    json.dump(dados_bitcoin_tratado, f, indent=2, ensure_ascii=False)
 
 # COMMAND ----------
 
@@ -177,8 +175,8 @@ with open(path, "w", encoding='utf-8') as f:
 
 # COMMAND ----------
 
-# Caminho do arquivo CSV no volume
-csv_path = f"/Volumes/pipeline_api_bitcoin/datalake/raw_files/bitcoin_{ts}.csv"
+# Caminho do arquivo CSV no schema lakehouse
+csv_path = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.csv"
 
 # Salvar como CSV usando PySpark
 df.write \
@@ -227,8 +225,8 @@ df.write \
 
 # COMMAND ----------
 
-# Caminho do arquivo Parquet no volume
-parquet_path = f"/Volumes/pipeline_api_bitcoin/datalake/raw_files/bitcoin_{ts}.parquet"
+# Caminho do arquivo Parquet no schema lakehouse
+parquet_path = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.parquet"
 
 # Salvar como Parquet usando PySpark
 df.write \
@@ -238,50 +236,7 @@ df.write \
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 8. Comparação: CSV vs Parquet
-
-# COMMAND ----------
-
-# Verificar tamanhos dos arquivos
-# PySpark salva CSV como diretório com múltiplos arquivos, precisamos verificar o tamanho total
-
-# Para CSV, PySpark cria um diretório com arquivos
-csv_files = glob.glob(f"{csv_path}/*.csv")
-csv_size = sum(os.path.getsize(f) for f in csv_files) if csv_files else 0
-
-# Para Parquet, também cria diretório
-parquet_files = glob.glob(f"{parquet_path}/*.parquet")
-parquet_size = sum(os.path.getsize(f) for f in parquet_files) if parquet_files else 0
-
-if csv_size > 0 and parquet_size > 0:
-    print("=" * 70)
-    print("COMPARAÇÃO: CSV vs PARQUET")
-    print("=" * 70)
-    
-    print("\n📄 CSV:")
-    print(f"   Tamanho: {csv_size:,} bytes ({csv_size/1024:.2f} KB)")
-    print("   Tipo: Texto (Row-based)")
-    print("   Legível: Sim (Excel, Bloco de Notas)")
-    
-    print("\n📊 Parquet:")
-    print(f"   Tamanho: {parquet_size:,} bytes ({parquet_size/1024:.2f} KB)")
-    print("   Tipo: Binário (Columnar)")
-    print("   Legível: Não (requer ferramentas especiais)")
-    
-    if csv_size > 0:
-        economia = ((csv_size - parquet_size) / csv_size) * 100
-        print(f"\n💾 Economia com Parquet: {economia:.1f}%")
-    
-    print("\n" + "=" * 70)
-    print("RESUMO")
-    print("=" * 70)
-    print("\n📄 CSV: Legível, maior, mais lento → Use para dados pequenos e debugging")
-    print("📊 Parquet: Binário, menor, mais rápido → Use para Big Data e analytics")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 9. Salvando como Delta Table
+# MAGIC ## 8. Salvando como Delta Table
 # MAGIC
 # MAGIC ### 🎯 O que é Delta Table?
 # MAGIC
@@ -314,8 +269,8 @@ if csv_size > 0 and parquet_size > 0:
 
 # COMMAND ----------
 
-# Caminho da tabela Delta no Unity Catalog
-delta_table_path = "pipeline_api_bitcoin.datalake.bitcoin_data"
+# Caminho da tabela Delta no Unity Catalog (schema lakehouse)
+delta_table_path = "pipeline_api_bitcoin.lakehouse.bitcoin_data"
 
 # Salvar como Delta Table (modo append se a tabela já existir)
 df.write \
@@ -327,7 +282,7 @@ df.write \
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 10. Convertendo Delta Table para DataFrame
+# MAGIC ## 9. Convertendo Delta Table para DataFrame
 
 # COMMAND ----------
 
@@ -344,7 +299,7 @@ df_delta.show(truncate=False)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 11. Visualizando Dados Finais
+# MAGIC ## 10. Visualizando Dados Finais
 
 # COMMAND ----------
 
@@ -353,16 +308,16 @@ print("DADOS EXTRAÍDOS E PROCESSADOS")
 print("=" * 70)
 
 print("\n📊 Dados em JSON:")
-print(json.dumps(dados_bitcoin, indent=2, ensure_ascii=False))
+print(json.dumps(dados_bitcoin_tratado, indent=2, ensure_ascii=False))
 
 print("\n📊 Spark DataFrame (da Delta Table):")
 df_delta.show(truncate=False)
 
 print("\n📊 Resumo:")
-print(f"   Bitcoin em USD: ${dados_bitcoin[0]['valor_usd']:,.2f}")
-print(f"   Bitcoin em BRL: R$ {dados_bitcoin[0]['valor_brl']:,.2f}")
-print(f"   Taxa USD-BRL: R$ {dados_bitcoin[0]['taxa_conversao_usd_brl']:.4f}")
-print(f"   Timestamp: {dados_bitcoin[0]['timestamp']}")
+print(f"   Bitcoin em USD: ${dados_bitcoin_tratado[0]['valor_usd']:,.2f}")
+print(f"   Bitcoin em BRL: R$ {dados_bitcoin_tratado[0]['valor_brl']:,.2f}")
+print(f"   Taxa USD-BRL: R$ {dados_bitcoin_tratado[0]['taxa_conversao_usd_brl']:.4f}")
+print(f"   Timestamp: {dados_bitcoin_tratado[0]['timestamp']}")
 
 # COMMAND ----------
 
@@ -372,7 +327,7 @@ print(f"   Timestamp: {dados_bitcoin[0]['timestamp']}")
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT * FROM pipeline_api_bitcoin.datalake.bitcoin_data
+# MAGIC SELECT * FROM pipeline_api_bitcoin.lakehouse.bitcoin_data
 # MAGIC ORDER BY timestamp DESC
 # MAGIC LIMIT 10
 
@@ -384,18 +339,18 @@ print(f"   Timestamp: {dados_bitcoin[0]['timestamp']}")
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC DESCRIBE HISTORY pipeline_api_bitcoin.datalake.bitcoin_data
+# MAGIC DESCRIBE HISTORY pipeline_api_bitcoin.lakehouse.bitcoin_data
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 12. Resumo do Pipeline
+# MAGIC ## 11. Resumo do Pipeline
 # MAGIC
 # MAGIC Este pipeline completo realiza:
 # MAGIC
 # MAGIC 1. ✅ **Extração**: Busca dados da API Coinbase e cotação USD-BRL
 # MAGIC 2. ✅ **Transformação**: Trata dados, converte para BRL e adiciona timestamp
-# MAGIC 3. ✅ **Infraestrutura**: Cria Catalog, Schema e Volume no Unity Catalog
+# MAGIC 3. ✅ **Infraestrutura**: Cria Catalog e Schema Lakehouse no Unity Catalog
 # MAGIC 4. ✅ **Carga em múltiplos formatos usando PySpark**:
 # MAGIC    - **JSON**: Formato texto legível, ideal para dados brutos
 # MAGIC    - **CSV**: Formato texto universal, legível por humanos (salvo com PySpark)
