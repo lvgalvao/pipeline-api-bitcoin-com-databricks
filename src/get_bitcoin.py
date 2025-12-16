@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # 💰 Extração de Dados Bitcoin - API Coinbase
+# MAGIC # Extração de Dados Bitcoin - API Coinbase
 # MAGIC
 # MAGIC Este notebook demonstra como:
 # MAGIC - Extrair dados da API da Coinbase
@@ -20,14 +20,8 @@
 # COMMAND ----------
 
 import requests
-import json
-from datetime import datetime
-import pandas as pd
-import os
-
-# Para trabalhar com volumes no Databricks
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, current_timestamp
+# import json
+# from datetime import datetime
 
 print("✅ Bibliotecas importadas com sucesso!")
 
@@ -39,7 +33,7 @@ print("✅ Bibliotecas importadas com sucesso!")
 # COMMAND ----------
 
 # URL da API Coinbase para obter o preço spot
-print("📌 Configuração da API Coinbase")
+url = 'https://api.coinbase.com/v2/prices/spot'
 
 # COMMAND ----------
 
@@ -48,17 +42,19 @@ print("📌 Configuração da API Coinbase")
 
 # COMMAND ----------
 
+resposta = requests.get(url)
+
+# COMMAND ----------
+
+print(resposta.json())
+
+# COMMAND ----------
+
 def extrair_dados_bitcoin():
     """Extrai o JSON completo da API da Coinbase."""
     url = 'https://api.coinbase.com/v2/prices/spot'
     resposta = requests.get(url)
     return resposta.json()
-
-# Extraindo dados
-dados_json = extrair_dados_bitcoin()
-print("✅ Dados extraídos com sucesso!")
-print(f"\nResposta da API:")
-print(json.dumps(dados_json, indent=2))
 
 # COMMAND ----------
 
@@ -96,9 +92,9 @@ print(json.dumps(dados_bitcoin, indent=2, ensure_ascii=False))
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 5. Configurando Volume no Databricks
+# MAGIC ## 5. Configurando noVolume no Databricks
 # MAGIC
-# MAGIC ### 📁 O que são Volumes no Databricks?
+# MAGIC O que são Volumes no Databricks?
 # MAGIC
 # MAGIC **Volumes** são locais de armazenamento gerenciados pelo Databricks que permitem:
 # MAGIC - ✅ **Organização**: Estruturar dados de forma hierárquica
@@ -375,4 +371,5 @@ else:
 # MAGIC **Próximos passos**: Criar dashboard e agente de IA para análise dos dados!
 
 # COMMAND ----------
+
 
