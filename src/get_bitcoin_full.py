@@ -281,22 +281,6 @@ df.write \
 # Caminho da tabela Delta no Unity Catalog (schema bitcoin_data)
 delta_table_path = "pipeline_api_bitcoin.bitcoin_data.bitcoin_data"
 
-# Criar a tabela Delta explicitamente (se não existir)
-# type: ignore - spark está disponível no ambiente Databricks
-spark.sql(f"""
-    CREATE TABLE IF NOT EXISTS {delta_table_path}
-    (
-        valor_usd DOUBLE,
-        valor_brl DOUBLE,
-        criptomoeda STRING,
-        moeda_original STRING,
-        taxa_conversao_usd_brl DOUBLE,
-        timestamp TIMESTAMP
-    )
-    USING DELTA
-    COMMENT 'Tabela Delta para armazenar dados históricos de Bitcoin'
-""")  # noqa: F821
-
 # Salvar como Delta Table (modo append se a tabela já existir)
 df.write \
     .format("delta") \
@@ -320,29 +304,6 @@ df_delta.printSchema()
 
 # Mostrar dados
 df_delta.show(truncate=False)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 10. Visualizando Dados Finais
-
-# COMMAND ----------
-
-print("=" * 70)
-print("DADOS EXTRAÍDOS E PROCESSADOS")
-print("=" * 70)
-
-print("\n📊 Dados em JSON:")
-print(json.dumps(dados_bitcoin_tratado, indent=2, ensure_ascii=False))
-
-print("\n📊 Spark DataFrame (da Delta Table):")
-df_delta.show(truncate=False)
-
-print("\n📊 Resumo:")
-print(f"   Bitcoin em USD: ${dados_bitcoin_tratado[0]['valor_usd']:,.2f}")
-print(f"   Bitcoin em BRL: R$ {dados_bitcoin_tratado[0]['valor_brl']:,.2f}")
-print(f"   Taxa USD-BRL: R$ {dados_bitcoin_tratado[0]['taxa_conversao_usd_brl']:.4f}")
-print(f"   Timestamp: {dados_bitcoin_tratado[0]['timestamp']}")
 
 # COMMAND ----------
 
@@ -389,5 +350,3 @@ print(f"   Timestamp: {dados_bitcoin_tratado[0]['timestamp']}")
 # MAGIC - 🎯 **Delta Table**: Parquet + ACID + Time Travel → Use para Data Warehouses e pipelines críticos
 # MAGIC
 # MAGIC **Próximos passos**: Criar dashboard e agente de IA para análise dos dados!
-
-# COMMAND ----------
