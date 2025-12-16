@@ -5,17 +5,15 @@
   <em>Nossa missão é fornecer o melhor ensino em engenharia de dados</em>
 </p>
 
-<p align="center">
-  <img src="img/SeUZPWKQ.png" alt="Data Pipeline Bitcoin - ETL com Python e Databricks" width="800">
-</p>
-
 ---
 
 # 💰 **Data Pipeline: Extração de Dados Bitcoin com ETL em Python**
 
 ## 📋 **Sobre o Projeto**
 
-Este projeto faz parte de um **workshop gratuito de Data Engineering para Iniciantes**, realizado no dia **16/12/2025 às 19h30**, que pode ser assistido aqui: [YouTube Live](https://www.youtube.com/live/pFJCL1S3Zj8)
+Este projeto faz parte de um **workshop gratuito de Data Engineering para Iniciantes**, realizado no dia **16/12/2025 às 19h30**, que pode ser assistido aqui: 
+
+[![Workshop Data Engineering](./img/SeUZPWKQ.png)](https://www.youtube.com/live/pFJCL1S3Zj8)
 
 O projeto é focado na criação de pipelines de dados **ETL (Extract, Transform, Load)** do zero. O objetivo é construir um programa completo que consome dados de uma **API** (Coinbase), organiza esses dados e armazena em diferentes formatos (JSON, Parquet, Delta Lake), além de criar visualizações e agentes de IA no Databricks.
 
