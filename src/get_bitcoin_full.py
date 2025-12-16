@@ -54,8 +54,8 @@ def tratar_dados_bitcoin(dados_json, taxa_usd_brl):
     # Convertendo de USD para BRL
     valor_brl = valor_usd * taxa_usd_brl
     
-    # Adicionando timestamp
-    timestamp = datetime.now().isoformat()
+    # Adicionando timestamp como datetime object
+    timestamp = datetime.now()
     
     dados_tratados = [{
         "valor_usd": valor_usd,
@@ -135,7 +135,7 @@ df.printSchema()
 event_ts = dados_bitcoin_tratado[0]["timestamp"]
 
 # Converte para formato seguro para nome de arquivo
-ts = datetime.fromisoformat(event_ts).strftime("%Y%m%d_%H%M%S_%f")
+ts = event_ts.strftime("%Y%m%d_%H%M%S_%f")
 
 # Caminho do arquivo JSON no schema lakehouse
 json_path = f"/Volumes/pipeline_api_bitcoin/lakehouse/raw_files/bitcoin_{ts}.json"
@@ -291,7 +291,7 @@ spark.sql(f"""
         criptomoeda STRING,
         moeda_original STRING,
         taxa_conversao_usd_brl DOUBLE,
-        timestamp STRING
+        timestamp TIMESTAMP
     )
     USING DELTA
     COMMENT 'Tabela Delta para armazenar dados históricos de Bitcoin'

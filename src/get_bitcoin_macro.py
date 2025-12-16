@@ -34,8 +34,8 @@ def tratar_dados_bitcoin(dados_json, taxa_usd_brl):
     # Convertendo de USD para BRL
     valor_brl = valor_usd * taxa_usd_brl
     
-    # Adicionando timestamp
-    timestamp = datetime.now().isoformat()
+    # Adicionando timestamp como datetime object
+    timestamp = datetime.now()
     
     dados_tratados = [{
         "valor_usd": valor_usd,
@@ -91,7 +91,7 @@ spark.sql(f"""
         criptomoeda STRING,
         moeda_original STRING,
         taxa_conversao_usd_brl DOUBLE,
-        timestamp STRING
+        timestamp TIMESTAMP
     )
     USING DELTA
     COMMENT 'Tabela Delta para armazenar dados históricos de Bitcoin'
