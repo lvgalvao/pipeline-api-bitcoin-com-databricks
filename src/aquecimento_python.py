@@ -9,155 +9,14 @@
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 1. Variáveis
-# MAGIC
-# MAGIC Variáveis são como "caixas" onde guardamos informações. Em Python, você não precisa declarar o tipo da variável - o Python descobre automaticamente!
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### 1.1 Tipos de Variáveis Simples
-# MAGIC
-# MAGIC Python tem quatro tipos de dados básicos e simples que você vai usar constantemente:
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC #### String (str) - Texto
-# MAGIC
-# MAGIC Strings são usadas para armazenar texto. Podem ser criadas com aspas simples ou duplas.
-
-# COMMAND ----------
-
-# Exemplos de strings
-# TODO: Digite o código aqui:
-
-
-
-
-
-
-
-# Verificando o tipo
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC #### Int (int) - Números Inteiros
-# MAGIC
-# MAGIC Inteiros são números sem parte decimal. Usados para contagens, índices, quantidades.
-
-# COMMAND ----------
-
-# Exemplos de inteiros
-# TODO: Digite o código aqui:
-
-
-
-
-
-
-# Verificando o tipo
-
-# Operações com inteiros
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC #### Float (float) - Números Decimais
-# MAGIC
-# MAGIC Floats são números com parte decimal. Essenciais para valores monetários, preços, percentuais.
-
-# COMMAND ----------
-
-# Exemplos de floats
-# TODO: Digite o código aqui:
-
-
-
-
-
-
-# Verificando o tipo
-
-# Operações com floats
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC #### Bool (bool) - Valores Booleanos
-# MAGIC
-# MAGIC Booleanos representam valores de verdade: `True` ou `False`. Usados em condições e validações.
-
-# COMMAND ----------
-
-# Exemplos de booleanos
-# TODO: Digite o código aqui:
-
-
-
-
-
-
-# Verificando o tipo
-
-# Operações com booleanos
-
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### 1.2 Resumo dos Tipos Simples
-
-# COMMAND ----------
-
-# Criando variáveis de cada tipo
-# TODO: Digite o código aqui:
-
-
-
-# Verificando todos os tipos
-
-
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### 1.3 Variáveis com Dados da API
-# MAGIC
-# MAGIC Vamos simular dados que viriam da API da Coinbase usando os tipos simples:
-
-# COMMAND ----------
-
-# Simulando dados da API usando tipos simples
-# TODO: Digite o código aqui:
-
-
-
-
-
-
-
-
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ---
-# MAGIC
-# MAGIC ## 🖨️ 2. Print
+# MAGIC ## 🖨️ 1. Print
 # MAGIC
 # MAGIC A função `print()` é uma das mais importantes em Python. Ela exibe informações na tela (ou no output do notebook).
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Print Básico
+# MAGIC ### Print Básico - Hello World!
 
 # COMMAND ----------
 
@@ -176,8 +35,6 @@
 # TODO: Digite o código aqui:
 
 
-
-
 # COMMAND ----------
 
 # MAGIC %md
@@ -191,8 +48,105 @@
 # TODO: Digite o código aqui:
 
 
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ---
+# MAGIC
+# MAGIC ## 2. Variáveis
+# MAGIC
+# MAGIC Variáveis são como "caixas" onde guardamos informações. Em Python, você não precisa declarar o tipo da variável - o Python descobre automaticamente!
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### 2.1 Tipos de Variáveis Simples
+# MAGIC
+# MAGIC Python tem três tipos de dados básicos e simples que você vai usar constantemente:
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #### String (str) - Texto
+# MAGIC
+# MAGIC Strings são usadas para armazenar texto. Podem ser criadas com aspas simples ou duplas.
+
+# COMMAND ----------
+
+# Exemplos de strings
+# TODO: Digite o código aqui:
 
 
+# Verificando o tipo
+# TODO: Digite o código aqui:
+
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #### Int (int) - Números Inteiros
+# MAGIC
+# MAGIC Inteiros são números sem parte decimal. Usados para contagens, índices, quantidades.
+
+# COMMAND ----------
+
+# Exemplos de inteiros
+# TODO: Digite o código aqui:
+
+
+# Verificando o tipo
+# TODO: Digite o código aqui:
+
+# Operações com inteiros
+# TODO: Digite o código aqui:
+
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #### Float (float) - Números Decimais
+# MAGIC
+# MAGIC Floats são números com parte decimal. Essenciais para valores monetários, preços, percentuais.
+
+# COMMAND ----------
+
+# Exemplos de floats
+# TODO: Digite o código aqui:
+
+
+# Verificando o tipo
+# TODO: Digite o código aqui:
+
+# Operações com floats
+# TODO: Digite o código aqui:
+
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### 2.2 Resumo dos Tipos Simples
+
+# COMMAND ----------
+
+# Criando variáveis de cada tipo
+# TODO: Digite o código aqui:
+
+
+# Verificando todos os tipos
+# TODO: Digite o código aqui:
+
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### 2.3 Variáveis com Dados da API
+# MAGIC
+# MAGIC Vamos simular dados que viriam da API da Coinbase usando os tipos simples:
+
+# COMMAND ----------
+
+# Simulando dados da API usando tipos simples
+# TODO: Digite o código aqui:
 
 
 # COMMAND ----------
@@ -200,76 +154,14 @@
 # MAGIC %md
 # MAGIC ---
 # MAGIC
-# MAGIC ## 1.4 Variáveis Compostas: Listas e Dicionários
-# MAGIC
-# MAGIC Além dos tipos simples, Python tem estruturas de dados mais complexas que permitem armazenar múltiplos valores.
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Lista (list) - Coleção Ordenada
-# MAGIC
-# MAGIC Listas são coleções ordenadas de itens. Podem conter qualquer tipo de dado, inclusive outras listas.
-
-# COMMAND ----------
-
-# Criando listas
-# TODO: Digite o código aqui:
-
-
-
-
-
-
-# Verificando o tipo
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC #### Acessando Elementos de uma Lista
-# MAGIC
-# MAGIC Listas são indexadas começando do zero. Você pode acessar elementos por posição.
-
-# COMMAND ----------
-
-# TODO: Digite o código aqui:
-
-
-
-
-
-# Tamanho da lista
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC #### Operações com Listas
-
-# COMMAND ----------
-
-# TODO: Digite o código aqui:
-
-
-
-# Adicionar elemento no final
-
-
-# Adicionar elemento em posição específica
-
-
-# Remover elemento
-
-
-# Último elemento (remove e retorna)
-
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Dicionário (dict) - Pares Chave-Valor
+# MAGIC ## 3. Dicionários (dict) - Pares Chave-Valor
 # MAGIC
 # MAGIC Dicionários armazenam dados em pares chave-valor. São muito úteis para representar dados estruturados, como respostas de APIs.
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ### 3.1 Criando Dicionários
 
 # COMMAND ----------
 
@@ -277,62 +169,31 @@
 # TODO: Digite o código aqui:
 
 
-
-
-
-
 # Verificando o tipo
+# TODO: Digite o código aqui:
+
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### Acessando Valores de um Dicionário
+# MAGIC ### 3.2 Acessando Valores de um Dicionário
 # MAGIC
 # MAGIC Você pode acessar valores usando a chave entre colchetes ou o método `.get()`.
 
 # COMMAND ----------
 
-# TODO: Digite o código aqui:
-
-
-
-
 # Acessando valores
-
+# TODO: Digite o código aqui:
 
 
 # Usando get() (mais seguro - retorna None se a chave não existir)
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC #### Operações com Dicionários
-
-# COMMAND ----------
-
 # TODO: Digite o código aqui:
 
 
-
-
-
-# Obter todas as chaves
-
-# Obter todos os valores
-
-# Obter pares chave-valor
-
-# Adicionar novo par chave-valor
-
-
-# Atualizar valor existente
-
-
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Dicionários Aninhados
+# MAGIC ### 3.3 Dicionários Aninhados
 # MAGIC
 # MAGIC Dicionários podem conter outros dicionários, o que é muito comum em respostas de APIs.
 
@@ -342,35 +203,8 @@
 # TODO: Digite o código aqui:
 
 
-
-
-
-
-
-
 # Acessando valores aninhados
-
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Print de Estruturas de Dados
-
-# COMMAND ----------
-
-# Print de lista
 # TODO: Digite o código aqui:
-
-
-# Print de dicionário
-
-
-
-
-
-# Print formatado de dicionário
-
 
 
 # COMMAND ----------
@@ -378,81 +212,9 @@
 # MAGIC %md
 # MAGIC ---
 # MAGIC
-# MAGIC ## 🔧 3. Métodos
+# MAGIC ## 🔧 4. Métodos Úteis para ETL
 # MAGIC
-# MAGIC Métodos são funções que pertencem a objetos. Eles nos permitem realizar ações com os dados.
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ---
-# MAGIC
-# MAGIC ## 🔧 3. Métodos
-# MAGIC
-# MAGIC Métodos são funções que pertencem a objetos. Eles nos permitem realizar ações com os dados.
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### 3.1 Métodos de String
-
-# COMMAND ----------
-
-# Exemplos de métodos de string
-# TODO: Digite o código aqui:
-
-
-
-
-
-# Métodos úteis para dados de API
-
-
-
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### 3.2 Métodos de Lista
-
-# COMMAND ----------
-
-# Métodos de lista
-# TODO: Digite o código aqui:
-
-
-
-
-# Adicionar elemento
-
-
-# Remover elemento
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### 3.3 Métodos de Dicionário
-
-# COMMAND ----------
-
-# Métodos de dicionário
-# TODO: Digite o código aqui:
-
-
-
-
-
-
-
-# Acessar valores
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Métodos Úteis para ETL
+# MAGIC Métodos são funções que pertencem a objetos. Vamos focar nos métodos mais úteis para trabalhar com dados de APIs.
 
 # COMMAND ----------
 
@@ -460,21 +222,20 @@
 # TODO: Digite o código aqui:
 
 
-
-
-
 # Extrair e transformar dados
-
+# TODO: Digite o código aqui:
 
 
 # Converter string para float
+# TODO: Digite o código aqui:
+
 
 # Criar novo dicionário formatado
+# TODO: Digite o código aqui:
 
 
-
-
-
+# Exibir dados transformados
+# TODO: Digite o código aqui:
 
 
 # COMMAND ----------
@@ -496,19 +257,25 @@
 # COMMAND ----------
 
 # Dados simulados da API Coinbase
+dados_api = {
+    "data": {
+        "base": "BTC",
+        "currency": "USD",
+        "amount": "45230.75"
+    },
+    "timestamp": "2025-12-16T19:30:00Z"
+}
+
+# TODO: Extraia o preço e converta para float
 # TODO: Digite o código aqui:
 
 
-
-
-
-
-# TODO: Extraia o preço e converta para float
-
 # TODO: Crie uma string formatada com o par de moedas
+# TODO: Digite o código aqui:
+
 
 # TODO: Use print com f-string para exibir os dados
-
+# TODO: Digite o código aqui:
 
 
 # COMMAND ----------
@@ -520,9 +287,10 @@
 # MAGIC
 # MAGIC Neste aquecimento, você aprendeu:
 # MAGIC
-# MAGIC 1. **Variáveis**: Como armazenar dados em Python
-# MAGIC 2. **Print**: Como exibir informações na tela
-# MAGIC 3. **Métodos**: Como usar funções que pertencem a objetos
+# MAGIC 1. **Print**: Como exibir informações na tela (incluindo o famoso "Hello World!")
+# MAGIC 2. **Variáveis**: Como armazenar dados em Python (str, int, float)
+# MAGIC 3. **Dicionários**: Como trabalhar com dados estruturados de APIs
+# MAGIC 4. **Métodos Úteis para ETL**: Como transformar dados brutos em dados formatados
 # MAGIC
 # MAGIC Esses são os fundamentos que você vai usar durante todo o projeto de ETL!
 # MAGIC
