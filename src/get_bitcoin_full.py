@@ -4,8 +4,8 @@
 # MAGIC
 # MAGIC Este notebook demonstra como:
 # MAGIC - Extrair dados da API da Coinbase
-# MAGIC - Adicionar timestamp aos dados
-# MAGIC - Salvar dados em JSON, CSV e Parquet
+# MAGIC - Converter USD para BRL usando API de economia
+# MAGIC - Salvar dados em JSON, CSV e Parquet usando PySpark
 # MAGIC - Salvar como **Delta Table** no Databricks
 # MAGIC - Converter Delta Table para DataFrame
 # MAGIC - Trabalhar com **Unity Catalog** (Catalog, Schema, Volume)
@@ -22,28 +22,15 @@
 import requests
 import json
 from datetime import datetime
-import pandas as pd
 import os
+import glob
 
-# Para trabalhar com Spark e Delta Tables
-from pyspark.sql import SparkSession
-
-print("✅ Bibliotecas importadas com sucesso!")
+# No Databricks, o Spark já está disponível como 'spark', não precisa criar SparkSession
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 2. Configurando URLs e Parâmetros da API
-
-# COMMAND ----------
-
-# URL da API Coinbase para obter o preço spot
-url = 'https://api.coinbase.com/v2/prices/spot'
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 3. Extraindo Dados da API Coinbase
+# MAGIC ## 2. Extraindo e Transformando Dados
 
 # COMMAND ----------
 
@@ -53,41 +40,11 @@ def extrair_dados_bitcoin():
     resposta = requests.get(url)
     return resposta.json()
 
-# Extraindo dados
-dados_json = extrair_dados_bitcoin()
-print("✅ Dados extraídos com sucesso!")
-print("\nResposta da API:")
-print(json.dumps(dados_json, indent=2))
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 4. Extraindo Cotação USD-BRL da API de Economia
-
-# COMMAND ----------
-
 def extrair_cotacao_usd_brl():
     """Extrai a cotação USD-BRL da API AwesomeAPI."""
     url = 'https://economia.awesomeapi.com.br/json/last/USD-BRL'
     resposta = requests.get(url)
     return resposta.json()
-
-# Extraindo cotação USD-BRL
-cotacao_json = extrair_cotacao_usd_brl()
-print("✅ Cotação USD-BRL extraída com sucesso!")
-print("\nResposta da API de Economia:")
-print(json.dumps(cotacao_json, indent=2))
-
-# Extraindo a taxa de conversão (bid = taxa de compra)
-taxa_usd_brl = float(cotacao_json['USDBRL']['bid'])
-print(f"\n💱 Taxa de conversão USD-BRL: R$ {taxa_usd_brl:.4f}")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 5. Tratando Dados, Adicionando Timestamp e Convertendo para BRL
-
-# COMMAND ----------
 
 def tratar_dados_bitcoin(dados_json, taxa_usd_brl):
     """Transforma os dados brutos da API, renomeia colunas, adiciona timestamp e converte para BRL."""
@@ -100,7 +57,6 @@ def tratar_dados_bitcoin(dados_json, taxa_usd_brl):
     
     # Adicionando timestamp
     timestamp = datetime.now().isoformat()
-    timestamp_readable = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     dados_tratados = [{
         "valor_usd": valor_usd,
@@ -108,40 +64,23 @@ def tratar_dados_bitcoin(dados_json, taxa_usd_brl):
         "criptomoeda": criptomoeda,
         "moeda_original": moeda_original,
         "taxa_conversao_usd_brl": taxa_usd_brl,
-        "timestamp": timestamp,
-        "timestamp_readable": timestamp_readable
+        "timestamp": timestamp
     }]
     
     return dados_tratados
 
+# Extraindo dados
+dados_json = extrair_dados_bitcoin()
+cotacao_json = extrair_cotacao_usd_brl()
+taxa_usd_brl = float(cotacao_json['USDBRL']['bid'])
+
 # Tratando os dados e convertendo para BRL
 dados_bitcoin = tratar_dados_bitcoin(dados_json, taxa_usd_brl)
-print("✅ Dados tratados e convertidos para BRL com sucesso!")
-print("\nDados processados:")
-print(json.dumps(dados_bitcoin, indent=2, ensure_ascii=False))
-print(f"\n💰 Bitcoin em USD: ${dados_bitcoin[0]['valor_usd']:,.2f}")
-print(f"💰 Bitcoin em BRL: R$ {dados_bitcoin[0]['valor_brl']:,.2f}")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 6. Configurando nosso Catálogo
-# MAGIC
-# MAGIC ### 📁 O que é um Catálogo no Databricks?
-# MAGIC
-# MAGIC **Catálogos** são o nível mais alto de organização de dados no Databricks, dentro do **Unity Catalog**. Eles funcionam como um *container lógico* que agrupa schemas, tabelas, views e volumes, garantindo governança, segurança e organização em escala.
-# MAGIC
-# MAGIC Um Catálogo permite:
-# MAGIC - ✅ **Governança centralizada**: Controle de acesso unificado para dados, arquivos e assets
-# MAGIC - ✅ **Organização lógica**: Separação clara por domínio, time ou finalidade (ex: `main`, `dev`, `analytics`)
-# MAGIC - ✅ **Segurança**: Permissões granulares por catálogo, schema e objeto
-# MAGIC - ✅ **Padronização**: Base para boas práticas de arquitetura de dados
-# MAGIC
-# MAGIC ### 🧱 Hierarquia no Databricks
-# MAGIC
-# MAGIC A organização segue a hierarquia:
-# MAGIC
-# MAGIC `Catalog → Schema → Tabelas / Views / Volumes`
+# MAGIC ## 3. Configurando Unity Catalog
 
 # COMMAND ----------
 
@@ -151,19 +90,9 @@ print(f"💰 Bitcoin em BRL: R$ {dados_bitcoin[0]['valor_brl']:,.2f}")
 
 # COMMAND ----------
 
-# MAGIC %md
-# MAGIC ## 7. Criar um SCHEMA (database) no catálogo
-
-# COMMAND ----------
-
 # MAGIC %sql
 # MAGIC CREATE SCHEMA IF NOT EXISTS pipeline_api_bitcoin.datalake
 # MAGIC COMMENT 'Schema Datalake para salvar dados brutos e heterogêneos';
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## 8. Criar um Volume no catálogo
 
 # COMMAND ----------
 
@@ -174,7 +103,24 @@ print(f"💰 Bitcoin em BRL: R$ {dados_bitcoin[0]['valor_brl']:,.2f}")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 9. Salvando em JSON
+# MAGIC ## 4. Criando Spark DataFrame
+# MAGIC
+# MAGIC No Databricks, o objeto `spark` (SparkSession) já está disponível automaticamente.
+
+# COMMAND ----------
+
+# Criar Spark DataFrame a partir dos dados tratados
+# No Databricks, 'spark' já está disponível automaticamente
+# type: ignore - spark está disponível no ambiente Databricks
+df = spark.createDataFrame(dados_bitcoin)  # noqa: F821
+
+# Mostrar schema
+df.printSchema()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## 5. Salvando em JSON
 
 # COMMAND ----------
 
@@ -192,12 +138,10 @@ path = (
 with open(path, "w", encoding='utf-8') as f:
     json.dump(dados_bitcoin, f, indent=2, ensure_ascii=False)
 
-print(f"✅ JSON salvo em: {path}")
-
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 10. Salvando como CSV
+# MAGIC ## 6. Salvando como CSV usando PySpark
 # MAGIC
 # MAGIC ### 📄 O que é CSV?
 # MAGIC
@@ -233,30 +177,19 @@ print(f"✅ JSON salvo em: {path}")
 
 # COMMAND ----------
 
-# Criar DataFrame do Pandas
-df_csv = pd.DataFrame(dados_bitcoin)
-
 # Caminho do arquivo CSV no volume
 csv_path = f"/Volumes/pipeline_api_bitcoin/datalake/raw_files/bitcoin_{ts}.csv"
 
-# Salvar como CSV
-df_csv.to_csv(csv_path, index=False, encoding='utf-8')
-
-# Verificar tamanho do arquivo
-tamanho_csv = os.path.getsize(csv_path)
-
-print(f"✅ CSV salvo em: {csv_path}")
-print(f"📦 Tamanho: {tamanho_csv:,} bytes ({tamanho_csv/1024:.2f} KB)")
-print(f"📊 Total de registros: {len(df_csv)}")
-
-# Mostrar dados
-print("\n📄 Conteúdo do CSV:")
-print(df_csv)
+# Salvar como CSV usando PySpark
+df.write \
+    .mode("overwrite") \
+    .option("header", "true") \
+    .csv(csv_path)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 11. Salvando como Parquet
+# MAGIC ## 7. Salvando como Parquet usando PySpark
 # MAGIC
 # MAGIC ### 📊 O que é Parquet?
 # MAGIC
@@ -294,55 +227,50 @@ print(df_csv)
 
 # COMMAND ----------
 
-# Criar DataFrame do Pandas
-df_parquet = pd.DataFrame(dados_bitcoin)
-
 # Caminho do arquivo Parquet no volume
 parquet_path = f"/Volumes/pipeline_api_bitcoin/datalake/raw_files/bitcoin_{ts}.parquet"
 
-# Salvar como Parquet
-df_parquet.to_parquet(parquet_path, index=False, engine='pyarrow')
-
-# Verificar tamanho do arquivo
-tamanho_parquet = os.path.getsize(parquet_path)
-
-print(f"✅ Parquet salvo em: {parquet_path}")
-print(f"📦 Tamanho: {tamanho_parquet:,} bytes ({tamanho_parquet/1024:.2f} KB)")
-print(f"📊 Total de registros: {len(df_parquet)}")
-
-# Mostrar dados
-print("\n📊 Conteúdo do Parquet:")
-print(df_parquet)
+# Salvar como Parquet usando PySpark
+df.write \
+    .mode("overwrite") \
+    .parquet(parquet_path)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 12. Comparação: CSV vs Parquet
+# MAGIC ## 8. Comparação: CSV vs Parquet
 
 # COMMAND ----------
 
-if os.path.exists(csv_path) and os.path.exists(parquet_path):
-    tamanho_csv = os.path.getsize(csv_path)
-    tamanho_parquet = os.path.getsize(parquet_path)
-    
+# Verificar tamanhos dos arquivos
+# PySpark salva CSV como diretório com múltiplos arquivos, precisamos verificar o tamanho total
+
+# Para CSV, PySpark cria um diretório com arquivos
+csv_files = glob.glob(f"{csv_path}/*.csv")
+csv_size = sum(os.path.getsize(f) for f in csv_files) if csv_files else 0
+
+# Para Parquet, também cria diretório
+parquet_files = glob.glob(f"{parquet_path}/*.parquet")
+parquet_size = sum(os.path.getsize(f) for f in parquet_files) if parquet_files else 0
+
+if csv_size > 0 and parquet_size > 0:
     print("=" * 70)
     print("COMPARAÇÃO: CSV vs PARQUET")
     print("=" * 70)
     
     print("\n📄 CSV:")
-    print(f"   Tamanho: {tamanho_csv:,} bytes ({tamanho_csv/1024:.2f} KB)")
+    print(f"   Tamanho: {csv_size:,} bytes ({csv_size/1024:.2f} KB)")
     print("   Tipo: Texto (Row-based)")
     print("   Legível: Sim (Excel, Bloco de Notas)")
     
     print("\n📊 Parquet:")
-    print(f"   Tamanho: {tamanho_parquet:,} bytes ({tamanho_parquet/1024:.2f} KB)")
+    print(f"   Tamanho: {parquet_size:,} bytes ({parquet_size/1024:.2f} KB)")
     print("   Tipo: Binário (Columnar)")
     print("   Legível: Não (requer ferramentas especiais)")
     
-    if tamanho_csv > 0:
-        economia = ((tamanho_csv - tamanho_parquet) / tamanho_csv) * 100
+    if csv_size > 0:
+        economia = ((csv_size - parquet_size) / csv_size) * 100
         print(f"\n💾 Economia com Parquet: {economia:.1f}%")
-        print(f"   (CSV é {tamanho_csv/tamanho_parquet:.1f}x maior que Parquet)")
     
     print("\n" + "=" * 70)
     print("RESUMO")
@@ -353,7 +281,7 @@ if os.path.exists(csv_path) and os.path.exists(parquet_path):
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 13. Salvando como Delta Table
+# MAGIC ## 9. Salvando como Delta Table
 # MAGIC
 # MAGIC ### 🎯 O que é Delta Table?
 # MAGIC
@@ -386,77 +314,55 @@ if os.path.exists(csv_path) and os.path.exists(parquet_path):
 
 # COMMAND ----------
 
-# Criar SparkSession
-spark = SparkSession.builder.appName("BitcoinPipeline").getOrCreate()
-
-# Converter DataFrame do Pandas para Spark DataFrame
-df_spark = spark.createDataFrame(df_parquet)
-
-# Mostrar schema
-print("📊 Schema do DataFrame Spark:")
-df_spark.printSchema()
-
-# Mostrar dados
-print("\n📊 Dados do DataFrame Spark:")
-df_spark.show()
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Salvando como Delta Table no Unity Catalog
-
-# COMMAND ----------
-
 # Caminho da tabela Delta no Unity Catalog
 delta_table_path = "pipeline_api_bitcoin.datalake.bitcoin_data"
 
 # Salvar como Delta Table (modo append se a tabela já existir)
-df_spark.write \
+df.write \
     .format("delta") \
     .mode("append") \
     .option("mergeSchema", "true") \
     .saveAsTable(delta_table_path)
 
-print(f"✅ Delta Table salva em: {delta_table_path}")
-
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 14. Convertendo Delta Table para DataFrame
-# MAGIC
-# MAGIC Agora vamos ler a Delta Table e convertê-la para DataFrame para análise.
+# MAGIC ## 10. Convertendo Delta Table para DataFrame
 
 # COMMAND ----------
 
 # Ler Delta Table como Spark DataFrame
-df_delta = spark.read.table(delta_table_path)
-
-print("✅ Delta Table lida com sucesso!")
-print(f"📊 Total de registros: {df_delta.count()}")
+# type: ignore - spark está disponível no ambiente Databricks
+df_delta = spark.read.table(delta_table_path)  # noqa: F821
 
 # Mostrar schema
-print("\n📊 Schema da Delta Table:")
 df_delta.printSchema()
 
 # Mostrar dados
-print("\n📊 Dados da Delta Table:")
 df_delta.show(truncate=False)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Convertendo Spark DataFrame para Pandas DataFrame
+# MAGIC ## 11. Visualizando Dados Finais
 
 # COMMAND ----------
 
-# Converter Spark DataFrame para Pandas DataFrame
-df_pandas = df_delta.toPandas()
+print("=" * 70)
+print("DADOS EXTRAÍDOS E PROCESSADOS")
+print("=" * 70)
 
-print("✅ Spark DataFrame convertido para Pandas DataFrame!")
-print(f"\n📊 Tipo: {type(df_pandas)}")
-print(f"📊 Shape: {df_pandas.shape}")
-print("\n📊 Dados:")
-print(df_pandas)
+print("\n📊 Dados em JSON:")
+print(json.dumps(dados_bitcoin, indent=2, ensure_ascii=False))
+
+print("\n📊 Spark DataFrame (da Delta Table):")
+df_delta.show(truncate=False)
+
+print("\n📊 Resumo:")
+print(f"   Bitcoin em USD: ${dados_bitcoin[0]['valor_usd']:,.2f}")
+print(f"   Bitcoin em BRL: R$ {dados_bitcoin[0]['valor_brl']:,.2f}")
+print(f"   Taxa USD-BRL: R$ {dados_bitcoin[0]['taxa_conversao_usd_brl']:.4f}")
+print(f"   Timestamp: {dados_bitcoin[0]['timestamp']}")
 
 # COMMAND ----------
 
@@ -475,8 +381,6 @@ print(df_pandas)
 # MAGIC %md
 # MAGIC ### Verificando histórico da Delta Table (Time Travel)
 
-# MAGIC Uma das grandes vantagens do Delta Lake é o **Time Travel** - podemos acessar versões anteriores dos dados!
-
 # COMMAND ----------
 
 # MAGIC %sql
@@ -485,19 +389,19 @@ print(df_pandas)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 15. Resumo do Pipeline
+# MAGIC ## 12. Resumo do Pipeline
 # MAGIC
 # MAGIC Este pipeline completo realiza:
 # MAGIC
-# MAGIC 1. ✅ **Extração**: Busca dados da API Coinbase
-# MAGIC 2. ✅ **Transformação**: Trata dados e adiciona timestamp
+# MAGIC 1. ✅ **Extração**: Busca dados da API Coinbase e cotação USD-BRL
+# MAGIC 2. ✅ **Transformação**: Trata dados, converte para BRL e adiciona timestamp
 # MAGIC 3. ✅ **Infraestrutura**: Cria Catalog, Schema e Volume no Unity Catalog
-# MAGIC 4. ✅ **Carga em múltiplos formatos**:
+# MAGIC 4. ✅ **Carga em múltiplos formatos usando PySpark**:
 # MAGIC    - **JSON**: Formato texto legível, ideal para dados brutos
-# MAGIC    - **CSV**: Formato texto universal, legível por humanos
-# MAGIC    - **Parquet**: Formato binário columnar, otimizado para Big Data
+# MAGIC    - **CSV**: Formato texto universal, legível por humanos (salvo com PySpark)
+# MAGIC    - **Parquet**: Formato binário columnar, otimizado para Big Data (salvo com PySpark)
 # MAGIC    - **Delta Table**: Formato com ACID transactions e time travel
-# MAGIC 5. ✅ **Conversão**: Delta Table → Spark DataFrame → Pandas DataFrame
+# MAGIC 5. ✅ **Conversão**: Delta Table → Spark DataFrame
 # MAGIC
 # MAGIC **Comparação de Formatos:**
 # MAGIC - 📄 **CSV**: Legível, maior, mais lento → Use para debugging e dados pequenos
